@@ -6,9 +6,7 @@ load settlement.mat
 
 % Generate buffered matrix of movable locations
 mountains = 1 - atlantis.mountains.impassable;
-% mountains(find(mountains == 0)) = - Inf;
 badland = atlantis.land.mask;
-% badland(find(badland==0)) = -Inf;
 buffer = mountains .* badland;
 
 T = 4000/25;
@@ -38,23 +36,22 @@ E_ds(:,:,1) = atlantis.ecop;
 
 % Carrying capacity
 K_ds = zeros([size(lat, 1) size(lon, 2)  T]);
-K_ds(:,:,1) = arrayfun(@atlantis_newag, E_ds(:,:,1), atlantis.rain, atlantis.rivers.flow);
+K_ds(:,:,1) = arrayfun(@update_capacity, E_ds(:,:,1), atlantis.rain, atlantis.rivers.flow);
 
 % Deaths from disease and starvation
 deaths = zeros(size(K_ds));
 starved = zeros(size(K_ds));
-% atlantis_neweco(eco, P, K, H)D_tp1, K_tp1)
 
 % Iterate through each time step
 for t = 2:T
 
     % Update values for E, K
-    E_ds(:,:,t) = arrayfun(@atlantis_neweco, E_ds(:,:,t-1), atlantis.ecop, K_ds(:,:,t-1), H_ds(:,:,t-1));
-    K_ds(:,:,t) = arrayfun(@atlantis_newag, E_ds(:,:,t), atlantis.rain, atlantis.rivers.flow);
+    E_ds(:,:,t) = arrayfun(@update_ecohealth, E_ds(:,:,t-1), atlantis.ecop, K_ds(:,:,t-1), H_ds(:,:,t-1));
+    K_ds(:,:,t) = arrayfun(@update_capacity, E_ds(:,:,t), atlantis.rain, atlantis.rivers.flow);
 
     % Update population, also getting the number of potential migrants (subject
     % to available space) and deaths due to disease.
-    [H_ds(:,:,t), migrants, deaths(:,:,t)] = arrayfun(@atlantis_newpop, H_ds(:,:,t-1), atlantis.disease, K_ds(:,:,t));
+    [H_ds(:,:,t), migrants, deaths(:,:,t)] = arrayfun(@update_pop, H_ds(:,:,t-1), atlantis.disease, K_ds(:,:,t));
     
     % Loop through grid cells, starting with the furthest from Plymouth Rock, and
     % determine where migrants will go. They will choose the grid cell with the 
@@ -62,7 +59,7 @@ for t = 2:T
     % cell with the next most space, etc. If all adjacent cells are at capacity,
     % the remaining migrants starve.
     for i = 1:size(idx, 1)    
-        [allocation, starving] = atlantis_migrate(idx(i,:), migrants, H_ds(:,:,t), K_ds(:,:,t), buffer);
+        [allocation, starving] = migrate(idx(i,:), migrants, H_ds(:,:,t), K_ds(:,:,t), buffer);
         starved(idx(i,1),idx(i,2), t) = starving; 
         H_ds(:,:,t) = H_ds(:,:,t) + allocation;
     end
