@@ -1,4 +1,4 @@
-function [demog_tp1, outmig, deaths] = atlantis_newpop(demog, D_tp1, K_tp1)
+function [demog_tp1, outmig, deaths] = update_pop(demog, D_tp1, K_tp1)
     % Increments population 1 time step, accounting for deaths due to disease.
     % Outputs new population in the grid cell, migrants, and deaths in separate
     % objects.

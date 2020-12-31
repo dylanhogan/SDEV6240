@@ -1,4 +1,4 @@
-function [eco_tp1] = atlantis_neweco(eco, P, K, H)
+function [eco_tp1] = update_ecohealth(eco, P, K, H)
     % Updates ecosystem health for a single grid cell.
     
     if (P == 0 | K ==0 )

@@ -1,4 +1,4 @@
-function [K] = atlantis_newag(E, Pr, R)
+function [K] = update_capacity(E, Pr, R)
     % Updates K for a single grid cell.
     if (R == 1)
         K = (0.5 + E) * 1000;

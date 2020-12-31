@@ -1,4 +1,4 @@
-function [migration, starving] = atlantis_migrate(coord, migrants, H, K, buffer)
+function [migration, starving] = migrate(coord, migrants, H, K, buffer)
     % Handles migration decisions as described in report.
 
     x = coord(1); y = coord(2);
