@@ -13,8 +13,8 @@ buffer = mountains .* badland;
 
 T = 4000/25;
 
-% distances from original landing, which we'll use to determine who gets to 
-% migrate first. Gridcells with migrants furthest away from the "Plymouth Rock"
+% Calculat distances from original landing, which we'll use to determine who gets 
+% to migrate first. Gridcells with migrants furthest away from the "Plymouth Rock"
 % are allowed to migrate first.
 dist_mat = zeros([size(lat, 1) size(lon, 2)])
 for x = 1:size(dist_mat, 1) 
@@ -68,7 +68,7 @@ for t = 2:T
     end
 end
 
-% All-cause mortality = disease + sarved
+% All-cause mortality = disease + starved
 all_mort = deaths + starved;
 
 
@@ -78,7 +78,7 @@ i = 0;
 tiledlayout(3,3,'TileSpacing','Compact','Padding','Compact')
 for t = 1:3:7
     i = i + 1;
-    % subplot(3, 3, t)
+
     nexttile
     imagesc(lon, lat, H_ds(:, :, year(i)))
     axis xy
@@ -90,7 +90,6 @@ for t = 1:3:7
     end
     title(strcat('Population, year=', num2str(year(i)*25)));
 
-    % subplot(3, 3, t+1)
     nexttile
     imagesc(lon, lat, E_ds(:, :, year(i)))
     axis xy
@@ -101,7 +100,6 @@ for t = 1:3:7
     end
     title(strcat('Ecosystem health, year=', num2str(year(i)*25)));
 
-    % subplot(3, 3, t+2)
     nexttile
     imagesc(lon, lat, all_mort(:, :, year(i)))
     axis xy
